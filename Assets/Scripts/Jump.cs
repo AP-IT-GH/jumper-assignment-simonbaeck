@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Agent : MonoBehaviour
+public class Jump : MonoBehaviour
 {
     public float distanceToGround = 0.55f;
     public float jumpSpeed = 6.0f;
