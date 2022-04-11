@@ -8,6 +8,8 @@ TagManager:
   - TrainingGround
   - Agent
   - Obstacle
+  - ScoreCount
+  - Trigger
   layers:
   - Default
   - TransparentFX

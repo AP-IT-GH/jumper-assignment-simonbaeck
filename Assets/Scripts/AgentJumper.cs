@@ -3,40 +3,69 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
+using TMPro;
 
 public class AgentJumper : Agent
 {
-    Rigidbody _rBody;
     public bool isGrounded = true;
-    public float jumpHeigth = 10f;
+    public float jumpHeight = 6.5f;
+    public TextMeshProUGUI scoreText;
+
+    private GameObject _agentObject;
+    private Rigidbody _agentRBody;
+    private GameObject _obstacleObject;
+    private Rigidbody _obstacleRBody;
+    private Vector3 _obstacleSpawnpoint;
+    private float _obstacleSpeed;
+
+    private System.Random _random = new System.Random();
 
     public override void Initialize()
     {
-        _rBody = GetComponent<Rigidbody>();
+        _agentObject = this.gameObject;
+        _agentRBody = this.GetComponent<Rigidbody>();
+        _obstacleObject = GameObject.FindGameObjectWithTag("Obstacle");
+        _obstacleRBody = GameObject.FindGameObjectWithTag("Obstacle").GetComponent<Rigidbody>();
+        _obstacleSpawnpoint = GameObject.FindGameObjectWithTag("Obstacle").transform.localPosition;
     }
     public override void OnEpisodeBegin()
     {
-        SetReward(1.0f);
+        SetReward(0.0f);
         isGrounded = true;
-        transform.localPosition = new Vector3(7.5f, 0.5f, 0f);
+        _agentObject.transform.localPosition = new Vector3(7.5f, 0.5f, 0f);
+        _obstacleObject.transform.localPosition = _obstacleSpawnpoint;
+        _obstacleSpeed = _random.Next(4, 8);
+    }
+
+    private void Update()
+    {
+        _obstacleRBody.velocity = new Vector3((float)_obstacleSpeed, 0.0f, 0.0f);
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        if (isGrounded && actionBuffers.DiscreteActions[0] == 1)
+        if (isGrounded && actionBuffers.ContinuousActions[0] == 1)
         {
             isGrounded = false;
-            _rBody.velocity = new Vector3(0, jumpHeigth, 0);
-            AddReward(-0.001f);
+            _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+            scoreText.text = GetCumulativeReward().ToString();
+            scoreText.color = Color.red;
+            AddReward(0.5f);
+        }
+
+        if (_obstacleObject.transform.localPosition.x > 13)
+        {
+            _obstacleObject.transform.localPosition = _obstacleSpawnpoint;
+            EndEpisode();
         }
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        var discreteActionsout = actionsOut.DiscreteActions;
+        var continousActionsout = actionsOut.ContinuousActions;
         if(Input.GetAxis("Jump") == 1)
         {
-            discreteActionsout[0] = 1;
+            continousActionsout[0] = 1;
         }
     }
 
@@ -45,7 +74,8 @@ public class AgentJumper : Agent
         if (other.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("Hit Obstacle");
-            Destroy(other.gameObject);
+            scoreText.text = GetCumulativeReward().ToString();
+            scoreText.color = Color.red;
             SetReward(-1.0f);
             EndEpisode();
         }
