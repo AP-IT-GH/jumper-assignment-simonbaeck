@@ -10,6 +10,10 @@ TagManager:
   - Obstacle
   - ScoreCount
   - Trigger
+  - HorizontalTarget
+  - VerticalTarget
+  - VerticalEnd
+  - HorizontalEnd
   layers:
   - Default
   - TransparentFX

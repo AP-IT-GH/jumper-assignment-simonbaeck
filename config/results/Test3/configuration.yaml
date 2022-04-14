@@ -1,6 +1,6 @@
 default_settings: null
 behaviors:
-  AgentJump:
+  CrossRoadJumper:
     trainer_type: ppo
     hyperparameters:
       batch_size: 10
@@ -62,7 +62,7 @@ engine_settings:
   no_graphics: false
 environment_parameters: null
 checkpoint_settings:
-  run_id: Test
+  run_id: Test3
   initialize_from: null
   load_model: false
   resume: false

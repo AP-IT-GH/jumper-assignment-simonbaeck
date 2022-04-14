@@ -2,22 +2,22 @@
     "AgentJump": {
         "checkpoints": [
             {
-                "steps": 1929,
-                "file_path": "results\\Test\\AgentJump\\AgentJump-1929.onnx",
-                "reward": -1.0,
-                "creation_time": 1649686363.995164,
+                "steps": 37518,
+                "file_path": "results\\Test\\AgentJump\\AgentJump-37518.onnx",
+                "reward": null,
+                "creation_time": 1649945201.5235653,
                 "auxillary_file_paths": [
-                    "results\\Test\\AgentJump\\AgentJump-1929.pt"
+                    "results\\Test\\AgentJump\\AgentJump-37518.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 1929,
+            "steps": 37518,
             "file_path": "results\\Test\\AgentJump.onnx",
-            "reward": -1.0,
-            "creation_time": 1649686363.995164,
+            "reward": null,
+            "creation_time": 1649945201.5235653,
             "auxillary_file_paths": [
-                "results\\Test\\AgentJump\\AgentJump-1929.pt"
+                "results\\Test\\AgentJump\\AgentJump-37518.pt"
             ]
         }
     },
