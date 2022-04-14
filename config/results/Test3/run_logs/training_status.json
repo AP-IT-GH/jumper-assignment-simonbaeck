@@ -1,0 +1,29 @@
+{
+    "CrossRoadJumper": {
+        "checkpoints": [
+            {
+                "steps": 200001,
+                "file_path": "results\\Test3\\CrossRoadJumper\\CrossRoadJumper-200001.onnx",
+                "reward": -0.3,
+                "creation_time": 1649961501.278372,
+                "auxillary_file_paths": [
+                    "results\\Test3\\CrossRoadJumper\\CrossRoadJumper-200001.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 200001,
+            "file_path": "results\\Test3\\CrossRoadJumper.onnx",
+            "reward": -0.3,
+            "creation_time": 1649961501.278372,
+            "auxillary_file_paths": [
+                "results\\Test3\\CrossRoadJumper\\CrossRoadJumper-200001.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}
