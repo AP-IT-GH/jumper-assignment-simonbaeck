@@ -17,9 +17,15 @@ public class AgentJumper : Agent
     private Rigidbody _obstacleRBody;
     private Vector3 _obstacleSpawnpoint;
     private float _obstacleSpeed;
-    private GameObject _triggerObject;
+    private GameObject _obstacleTriggerObject;
+    private GameObject _collectableObject;
+    private Rigidbody _collectableRBody;
+    private Vector3 _collectableSpawnpoint;
+    private float _collectableSpeed;
+    private GameObject _collectableTriggerObject;
     private bool _jumpedOnTime = false;
     private bool _hasJumped = false;
+    private int SelectObject;
 
     private System.Random _random = new System.Random();
 
@@ -30,7 +36,13 @@ public class AgentJumper : Agent
         _obstacleObject = GameObject.FindGameObjectWithTag("Obstacle");
         _obstacleRBody = GameObject.FindGameObjectWithTag("Obstacle").GetComponent<Rigidbody>();
         _obstacleSpawnpoint = GameObject.FindGameObjectWithTag("Obstacle").transform.localPosition;
-        _triggerObject = GameObject.FindGameObjectWithTag("Trigger");
+        _obstacleTriggerObject = GameObject.FindGameObjectWithTag("ObstacleTrigger"); 
+        _obstacleObject = GameObject.FindGameObjectWithTag("Obstacle");
+        _collectableRBody = GameObject.FindGameObjectWithTag("Collectable").GetComponent<Rigidbody>();
+        _collectableSpawnpoint = GameObject.FindGameObjectWithTag("Collectable").transform.localPosition;
+        _collectableTriggerObject = GameObject.FindGameObjectWithTag("CollectableTrigger");
+        _collectableTriggerObject = GameObject.FindGameObjectWithTag("CollectableTrigger");
+        _collectableObject = GameObject.FindGameObjectWithTag("Collectable");
     }
     public override void OnEpisodeBegin()
     {
@@ -41,43 +53,86 @@ public class AgentJumper : Agent
         _agentObject.transform.localPosition = new Vector3(7.5f, 0.5f, 0f);
         _obstacleObject.transform.localPosition = _obstacleSpawnpoint;
         _obstacleSpeed = _random.Next(4, 8);
+        _collectableObject.transform.localPosition = _collectableSpawnpoint;
+        _collectableSpeed = _random.Next(4, 8);
+        SelectObject = _random.Next(1, 3);
+        _obstacleObject.SetActive(false);
+        _collectableObject.SetActive(false);
     }
 
     private void Update()
     {
-        _obstacleRBody.velocity = new Vector3((float)_obstacleSpeed, 0.0f, 0.0f);
+        if (SelectObject == 1)
+        {
+            _obstacleObject.SetActive(true);
+            _obstacleRBody.velocity = new Vector3((float)_obstacleSpeed, 0.0f, 0.0f);
+            _collectableRBody.velocity = Vector3.zero;
+        }   
+        else if (SelectObject == 2)
+        {
+            _collectableObject.SetActive(true);
+            _collectableRBody.velocity = new Vector3((float)_obstacleSpeed, 0.0f, 0.0f);
+            _obstacleRBody.velocity = Vector3.zero;
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        print(actionBuffers.DiscreteActions[0]);
         if (isGrounded && actionBuffers.DiscreteActions[0] == 1)
         {
-            float distanceToTarget = Vector3.Distance(this.transform.localPosition, _obstacleObject.transform.localPosition);
-            if (distanceToTarget < 3.25f && !_hasJumped)
+            float distanceToObstacle = Vector3.Distance(this.transform.localPosition, _obstacleObject.transform.localPosition);
+            float distanceToCollectable = Vector3.Distance(this.transform.localPosition, _collectableObject.transform.localPosition);
+            if(SelectObject == 1) 
             {
-                SetReward(0.5f);
-                scoreText.text = GetCumulativeReward().ToString();
-                scoreText.color = Color.green;
-                _jumpedOnTime = true;
-                _hasJumped = true;
-                isGrounded = false;
-                _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+                if (distanceToObstacle < 3.25f && !_hasJumped)
+                {
+                    SetReward(0.5f);
+                    scoreText.text = GetCumulativeReward().ToString();
+                    scoreText.color = Color.green;
+                    _jumpedOnTime = true;
+                    _hasJumped = true;
+                    isGrounded = false;
+                    _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+                }
+                else if (!_hasJumped)
+                {
+                    SetReward(-0.5f);
+                    scoreText.text = GetCumulativeReward().ToString();
+                    scoreText.color = Color.red;
+                    isGrounded = false;
+                    _jumpedOnTime = false;
+                    _hasJumped = true;
+                    _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+                }
             }
-            else if (!_hasJumped)
+            else if(SelectObject == 2)
             {
-                SetReward(-0.5f);
-                scoreText.text = GetCumulativeReward().ToString();
-                scoreText.color = Color.red;
-                isGrounded = false;
-                _jumpedOnTime = false;
-                _hasJumped = true;
-                _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+                if (distanceToCollectable < 4.25f && !_hasJumped)
+                {
+                    SetReward(0.5f);
+                    scoreText.text = GetCumulativeReward().ToString();
+                    scoreText.color = Color.green;
+                    _jumpedOnTime = true;
+                    _hasJumped = true;
+                    isGrounded = false;
+                    _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+                }
+                else if (!_hasJumped)
+                {
+                    SetReward(-0.5f);
+                    scoreText.text = GetCumulativeReward().ToString();
+                    scoreText.color = Color.red;
+                    isGrounded = false;
+                    _jumpedOnTime = false;
+                    _hasJumped = true;
+                    _agentRBody.velocity = new Vector3(0, jumpHeight, 0);
+                }
             }
         }
 
-        if (_obstacleObject.transform.localPosition.x > 13.5)
+        if (_obstacleObject.transform.localPosition.x > 13.5 || _collectableObject.transform.localPosition.x > 13.5)
         {
+            _collectableObject.transform.localPosition = _collectableSpawnpoint;
             _obstacleObject.transform.localPosition = _obstacleSpawnpoint;
             EndEpisode();
         }
@@ -87,7 +142,9 @@ public class AgentJumper : Agent
     {
         sensor.AddObservation(_agentObject.transform.localPosition);
         sensor.AddObservation(_obstacleObject.transform.localPosition);
-        sensor.AddObservation(_triggerObject.transform.localPosition);
+        sensor.AddObservation(_obstacleTriggerObject.transform.localPosition);
+        sensor.AddObservation(_collectableObject.transform.localPosition);
+        sensor.AddObservation(_collectableTriggerObject.transform.localPosition);
         // sensor.AddObservation(_hasJumped);
         // sensor.AddObservation(_jumpedOnTime);
     }
@@ -103,7 +160,7 @@ public class AgentJumper : Agent
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Obstacle"))
+        if (other.gameObject.CompareTag("Obstacle") || other.gameObject.CompareTag("CollectableTrigger"))
         {
             if (!_jumpedOnTime && _hasJumped)
             {
@@ -121,7 +178,7 @@ public class AgentJumper : Agent
             }
         }
 
-        if (other.gameObject.CompareTag("Trigger") && !isGrounded)
+        if (!isGrounded && (other.gameObject.CompareTag("ObstacleTrigger")|| other.gameObject.CompareTag("Collectable")))
         {
             if (_jumpedOnTime)
             {
@@ -135,7 +192,6 @@ public class AgentJumper : Agent
                 scoreText.text = GetCumulativeReward().ToString();
                 scoreText.color = Color.red;
             }
-            
         }
     }
     void OnCollisionEnter(Collision other)

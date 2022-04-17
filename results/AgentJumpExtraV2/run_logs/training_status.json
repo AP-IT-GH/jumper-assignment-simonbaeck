@@ -1,0 +1,29 @@
+{
+    "AgentJump": {
+        "checkpoints": [
+            {
+                "steps": 176052,
+                "file_path": "results\\AgentJumpExtraV2\\AgentJump\\AgentJump-176052.onnx",
+                "reward": 1.0,
+                "creation_time": 1650197567.2674944,
+                "auxillary_file_paths": [
+                    "results\\AgentJumpExtraV2\\AgentJump\\AgentJump-176052.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 176052,
+            "file_path": "results\\AgentJumpExtraV2\\AgentJump.onnx",
+            "reward": 1.0,
+            "creation_time": 1650197567.2674944,
+            "auxillary_file_paths": [
+                "results\\AgentJumpExtraV2\\AgentJump\\AgentJump-176052.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

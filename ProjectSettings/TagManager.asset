@@ -9,11 +9,13 @@ TagManager:
   - Agent
   - Obstacle
   - ScoreCount
-  - Trigger
   - HorizontalTarget
   - VerticalTarget
   - VerticalEnd
   - HorizontalEnd
+  - ObstacleTrigger
+  - Collectable
+  - CollectableTrigger
   layers:
   - Default
   - TransparentFX
