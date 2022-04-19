@@ -1,2 +1,3 @@
-# jumper-assignment-simonbaeck-stefsantens
-jumper-assignment-simonbaeck-stefsantens created by GitHub Classroom
+# Jumper Agent - Simon Baeck | Stef Santens
+
+
